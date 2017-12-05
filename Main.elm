@@ -59,7 +59,7 @@ view m = div []
                 , button [onClick NoOp] [text (toString m)]
                 ] 
              ++ [
-                   text "hello"
+                   text "HELLOOO"
                 ]
              )
 
