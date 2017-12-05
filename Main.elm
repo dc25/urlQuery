@@ -27,7 +27,7 @@ githubOauthUri = "https://github.com/login/oauth/authorize"
 
 type Route = OauthCode (Maybe String) (Maybe String)
 route : Parser (Route -> a) a
-route = map OauthCode (s "blog" <?> stringParam "code" <?> stringParam "string")
+route = map OauthCode (s "" <?> stringParam "code" <?> stringParam "string")
 
 initModel : Maybe Route -> ( Model, Cmd Msg )
 initModel r = ( {value=0, oauth=Nothing}, Cmd.none )
