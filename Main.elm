@@ -1,6 +1,6 @@
 import Html exposing (Html, text)
 import Navigation 
-import UrlParser as Url exposing (parsePath, Parser, stringParam, top, (<?>), map)
+import UrlParser as Url exposing (parsePath, Parser, stringParam, top, (<?>), map, s)
 
 type alias Model = 
     { mcode: Maybe {code: Maybe String, location: Navigation.Location} }
@@ -9,7 +9,7 @@ type Msg =   UrlChange Navigation.Location
 
 type Route = Code (Maybe String) 
 route : Parser (Route -> a) a
-route = map Code (top <?> stringParam "code" )
+route = map Code (s "urlQuery" <?> stringParam "code" )
 
 init : Navigation.Location -> ( Model, Cmd Msg )
 init location =
