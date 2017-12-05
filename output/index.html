@@ -9835,13 +9835,6 @@ var _evancz$url_parser$UrlParser$stringParam = function (name) {
 var _evancz$url_parser$UrlParser$intParam = function (name) {
 	return A2(_evancz$url_parser$UrlParser$customParam, name, _evancz$url_parser$UrlParser$intParamHelp);
 };
-var _user$project$Main$initModel = function (r) {
-	return {
-		ctor: '_Tuple2',
-		_0: {value: 0, oauth: _elm_lang$core$Maybe$Nothing},
-		_1: _elm_lang$core$Platform_Cmd$none
-	};
-};
 var _user$project$Main$state = 'w9erwlksjdf;kajdsf';
 var _user$project$Main$scope = 'repo:user';
 var _user$project$Main$redirectUri = 'https://dc25.github.io/oauthElm';
@@ -9868,9 +9861,9 @@ var _user$project$Main$githubOauthUri = A2(
 							_elm_lang$core$Basics_ops['++'],
 							_user$project$Main$scope,
 							A2(_elm_lang$core$Basics_ops['++'], '&state=', _user$project$Main$state))))))));
-var _user$project$Main$Oauth = F2(
-	function (a, b) {
-		return {code: a, state: b};
+var _user$project$Main$Oauth = F3(
+	function (a, b, c) {
+		return {code: a, state: b, location: c};
 	});
 var _user$project$Main$Model = F2(
 	function (a, b) {
@@ -9937,35 +9930,61 @@ var _user$project$Main$route = A2(
 			_evancz$url_parser$UrlParser_ops['<?>'],
 			_evancz$url_parser$UrlParser$s(''),
 			_evancz$url_parser$UrlParser$stringParam('code')),
-		_evancz$url_parser$UrlParser$stringParam('string')));
+		_evancz$url_parser$UrlParser$stringParam('state')));
 var _user$project$Main$init = function (location) {
-	return _user$project$Main$initModel(
-		A2(_evancz$url_parser$UrlParser$parseHash, _user$project$Main$route, location));
+	var oauth = A2(_evancz$url_parser$UrlParser$parsePath, _user$project$Main$route, location);
+	var _p0 = oauth;
+	if (((_p0.ctor === 'Just') && (_p0._0._0.ctor === 'Just')) && (_p0._0._1.ctor === 'Just')) {
+		return {
+			ctor: '_Tuple2',
+			_0: {
+				value: 0,
+				oauth: _elm_lang$core$Maybe$Just(
+					{code: _p0._0._0._0, state: _p0._0._1._0, location: location})
+			},
+			_1: _elm_lang$core$Platform_Cmd$none
+		};
+	} else {
+		return {
+			ctor: '_Tuple2',
+			_0: {value: 0, oauth: _elm_lang$core$Maybe$Nothing},
+			_1: _elm_lang$core$Platform_Cmd$none
+		};
+	}
 };
 var _user$project$Main$updateOauth = F2(
 	function (model, location) {
 		var oauth = A2(_evancz$url_parser$UrlParser$parsePath, _user$project$Main$route, location);
-		var _p0 = oauth;
-		if (((_p0.ctor === 'Just') && (_p0._0._0.ctor === 'Just')) && (_p0._0._1.ctor === 'Just')) {
+		var _p1 = oauth;
+		if (((_p1.ctor === 'Just') && (_p1._0._0.ctor === 'Just')) && (_p1._0._1.ctor === 'Just')) {
 			return {
 				ctor: '_Tuple2',
 				_0: _elm_lang$core$Native_Utils.update(
 					model,
 					{
 						oauth: _elm_lang$core$Maybe$Just(
-							{code: _p0._0._0._0, state: _p0._0._1._0})
+							{code: _p1._0._0._0, state: _p1._0._1._0, location: location})
 					}),
 				_1: _elm_lang$core$Platform_Cmd$none
 			};
 		} else {
-			return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			return {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						oauth: _elm_lang$core$Maybe$Just(
+							{code: '', state: '', location: location})
+					}),
+				_1: _elm_lang$core$Platform_Cmd$none
+			};
 		}
 	});
 var _user$project$Main$update = F2(
 	function (c, m) {
-		var _p1 = c;
-		if (_p1.ctor === 'UrlChange') {
-			return A2(_user$project$Main$updateOauth, m, _p1._0);
+		var _p2 = c;
+		if (_p2.ctor === 'UrlChange') {
+			return A2(_user$project$Main$updateOauth, m, _p2._0);
 		} else {
 			return {
 				ctor: '_Tuple2',

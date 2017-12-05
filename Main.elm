@@ -4,7 +4,8 @@ import Html.Attributes exposing (href)
 import Navigation exposing (..)
 import UrlParser as Url exposing (..)
 
-type alias Oauth = {code: String, state: String}
+type alias Oauth = {code: String, state: String, location: Navigation.Location}
+-- type alias Oauth = {code: String, state: String}
 
 type alias Model = 
     { value:Int
@@ -27,21 +28,23 @@ githubOauthUri = "https://github.com/login/oauth/authorize"
 
 type Route = OauthCode (Maybe String) (Maybe String)
 route : Parser (Route -> a) a
-route = map OauthCode (s "" <?> stringParam "code" <?> stringParam "string")
+route = map OauthCode (s "" <?> stringParam "code" <?> stringParam "state")
+-- https://dc25.github.io/oauthElm/?code=138e645d4e27dd853b8e&state=w9erwlksjdf
 
-initModel : Maybe Route -> ( Model, Cmd Msg )
-initModel r = ( {value=0, oauth=Nothing}, Cmd.none )
 
 init : Navigation.Location -> ( Model, Cmd Msg )
 init location =
-    initModel (Url.parseHash route location)
+    let oauth = parsePath route location
+    in case oauth of
+        Just (OauthCode (Just c) (Just s)) -> ({value=0, oauth = Just {code=c,state=s,location=location}}, Cmd.none)
+        _ -> ({value=0, oauth=Nothing}, Cmd.none)
 
 updateOauth : Model -> Navigation.Location -> (Model, Cmd Msg)
 updateOauth model location =
     let oauth = parsePath route location
     in case oauth of
-        Just (OauthCode (Just c) (Just s)) -> ({model | oauth = Just {code=c,state=s}}, Cmd.none)
-        _ -> (model, Cmd.none)
+        Just (OauthCode (Just c) (Just s)) -> ({model | oauth = Just {code=c,state=s,location=location}}, Cmd.none)
+        _ -> ({model|oauth=Just {code ="", state="", location=location}}, Cmd.none)
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
