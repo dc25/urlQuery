@@ -28,7 +28,7 @@ githubOauthUri = "https://github.com/login/oauth/authorize"
 
 type Route = OauthCode (Maybe String) (Maybe String)
 route : Parser (Route -> a) a
-route = map OauthCode (s "" <?> stringParam "code" <?> stringParam "state")
+route = map OauthCode (s "oauth" <?> stringParam "code" <?> stringParam "state")
 -- https://dc25.github.io/oauthElm/?code=138e645d4e27dd853b8e&state=w9erwlksjdf
 
 
@@ -59,7 +59,7 @@ view m = div []
                 , button [onClick NoOp] [text (toString m)]
                 ] 
              ++ [
-                   text "HELLOOO"
+                   text "HELLOOO!!!"
                 ]
              )
 
