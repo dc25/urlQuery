@@ -1,67 +1,28 @@
-import Html exposing (Html, text, program, button, a, div)
-import Html.Events exposing (onClick)
-import Html.Attributes exposing (href)
-import Navigation exposing (..)
-import UrlParser as Url exposing (..)
-
-type alias Oauth = {code: String, state: String, location: Navigation.Location}
--- type alias Oauth = {code: String, state: String}
+import Html exposing (Html, text)
+import Navigation 
+import UrlParser as Url exposing (parsePath, Parser, stringParam, top, (<?>), map)
 
 type alias Model = 
-    { value:Int
-    , oauth: Maybe Oauth
-    }
+    { mcode: Maybe {code: Maybe String, location: Navigation.Location} }
 
-type Msg =   NoOp
-           | UrlChange Navigation.Location
+type Msg =   UrlChange Navigation.Location
 
-clientId = "8256469ec6a458a2b111"
-redirectUri = "https://dc25.github.io/oauthElm"
-scope = "repo:user"
-state = "w9erwlksjdf;kajdsf"
-
-githubOauthUri = "https://github.com/login/oauth/authorize"
-                     ++ "?client_id=" ++ clientId 
-                     ++ "&redirect_uri=" ++ redirectUri 
-                     ++ "&scope=" ++ scope 
-                     ++ "&state=" ++ state
-
-type Route = OauthCode (Maybe String) (Maybe String)
+type Route = Code (Maybe String) 
 route : Parser (Route -> a) a
-route = map OauthCode (s "oauth" <?> stringParam "code" <?> stringParam "state")
--- https://dc25.github.io/oauthElm/?code=138e645d4e27dd853b8e&state=w9erwlksjdf
-
+route = map Code (top <?> stringParam "code" )
 
 init : Navigation.Location -> ( Model, Cmd Msg )
 init location =
-    let oauth = parsePath route location
-    in case oauth of
-        Just (OauthCode (Just c) (Just s)) -> ({value=0, oauth = Just {code=c,state=s,location=location}}, Cmd.none)
-        _ -> ({value=0, oauth=Just {code="", state="", location=location}}, Cmd.none)
-
-updateOauth : Model -> Navigation.Location -> (Model, Cmd Msg)
-updateOauth model location =
-    let oauth = parsePath route location
-    in case oauth of
-        Just (OauthCode (Just c) (Just s)) -> ({model | oauth = Just {code=c,state=s,location=location}}, Cmd.none)
-        _ -> ({model|oauth=Just {code ="", state="", location=location}}, Cmd.none)
-
-
-update : Msg -> Model -> (Model, Cmd Msg)
-update c m = 
-    case c of
-        UrlChange location -> updateOauth m location
-        NoOp -> ({m | value=m.value+1}, Cmd.none)
+    let prout = parsePath route location
+    in case prout of
+        Just (Code c) -> ({mcode = Just {code=c,location=location}}, Cmd.none)
+        _ -> ({mcode=Just {code=Nothing, location=location}}, Cmd.none)
 
 view : Model -> Html Msg
-view m = div []
-             (  [ a [href githubOauthUri] [text "github auth"]
-                , button [onClick NoOp] [text (toString m)]
-                ] 
-             ++ [
-                   text "HELLOOO??"
-                ]
-             )
+view m = text (toString m) 
+
+update : Msg -> Model -> (Model, Cmd Msg)
+update _ model = (model, Cmd.none)
 
 main : Program Never Model Msg
 main =
