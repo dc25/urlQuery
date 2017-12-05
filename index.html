@@ -9835,12 +9835,12 @@ var _evancz$url_parser$UrlParser$stringParam = function (name) {
 var _evancz$url_parser$UrlParser$intParam = function (name) {
 	return A2(_evancz$url_parser$UrlParser$customParam, name, _evancz$url_parser$UrlParser$intParamHelp);
 };
-var _user$project$Main$update = F2(
-	function (c, m) {
-		return {ctor: '_Tuple2', _0: m + 1, _1: _elm_lang$core$Platform_Cmd$none};
-	});
 var _user$project$Main$initModel = function (r) {
-	return {ctor: '_Tuple2', _0: 0, _1: _elm_lang$core$Platform_Cmd$none};
+	return {
+		ctor: '_Tuple2',
+		_0: {value: 0, oauth: _elm_lang$core$Maybe$Nothing},
+		_1: _elm_lang$core$Platform_Cmd$none
+	};
 };
 var _user$project$Main$state = 'w9erwlksjdf;kajdsf';
 var _user$project$Main$scope = 'repo:user';
@@ -9848,23 +9848,34 @@ var _user$project$Main$redirectUri = 'https://dc25.github.io/oauthElm';
 var _user$project$Main$clientId = '8256469ec6a458a2b111';
 var _user$project$Main$githubOauthUri = A2(
 	_elm_lang$core$Basics_ops['++'],
-	'https://github.com/login/oauth/authorize?client_id=',
+	'https://github.com/login/oauth/authorize',
 	A2(
 		_elm_lang$core$Basics_ops['++'],
-		_user$project$Main$clientId,
+		'?client_id=',
 		A2(
 			_elm_lang$core$Basics_ops['++'],
-			'&redirect_uri=',
+			_user$project$Main$clientId,
 			A2(
 				_elm_lang$core$Basics_ops['++'],
-				_user$project$Main$redirectUri,
+				'&redirect_uri=',
 				A2(
 					_elm_lang$core$Basics_ops['++'],
-					'&scope=',
+					_user$project$Main$redirectUri,
 					A2(
 						_elm_lang$core$Basics_ops['++'],
-						_user$project$Main$scope,
-						A2(_elm_lang$core$Basics_ops['++'], '&state=', _user$project$Main$state)))))));
+						'&scope=',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_user$project$Main$scope,
+							A2(_elm_lang$core$Basics_ops['++'], '&state=', _user$project$Main$state))))))));
+var _user$project$Main$Oauth = F2(
+	function (a, b) {
+		return {code: a, state: b};
+	});
+var _user$project$Main$Model = F2(
+	function (a, b) {
+		return {value: a, oauth: b};
+	});
 var _user$project$Main$UrlChange = function (a) {
 	return {ctor: 'UrlChange', _0: a};
 };
@@ -9873,71 +9884,98 @@ var _user$project$Main$view = function (m) {
 	return A2(
 		_elm_lang$html$Html$div,
 		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$a,
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$href(_user$project$Main$githubOauthUri),
-					_1: {ctor: '[]'}
-				},
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html$text('github auth'),
-					_1: {ctor: '[]'}
-				}),
-			_1: {
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			{
 				ctor: '::',
 				_0: A2(
-					_elm_lang$html$Html$button,
+					_elm_lang$html$Html$a,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$NoOp),
+						_0: _elm_lang$html$Html_Attributes$href(_user$project$Main$githubOauthUri),
 						_1: {ctor: '[]'}
 					},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text(
-							_elm_lang$core$Basics$toString(m)),
+						_0: _elm_lang$html$Html$text('github auth'),
 						_1: {ctor: '[]'}
 					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$button,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$NoOp),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(
+								_elm_lang$core$Basics$toString(m)),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text('hello'),
 				_1: {ctor: '[]'}
-			}
-		});
+			}));
 };
-var _user$project$Main$OauthState = function (a) {
-	return {ctor: 'OauthState', _0: a};
-};
-var _user$project$Main$OauthCode = function (a) {
-	return {ctor: 'OauthCode', _0: a};
-};
-var _user$project$Main$route = _evancz$url_parser$UrlParser$oneOf(
-	{
-		ctor: '::',
-		_0: A2(
-			_evancz$url_parser$UrlParser$map,
-			_user$project$Main$OauthCode,
-			A2(
-				_evancz$url_parser$UrlParser_ops['<?>'],
-				_evancz$url_parser$UrlParser$s('blog'),
-				_evancz$url_parser$UrlParser$stringParam('search'))),
-		_1: {
-			ctor: '::',
-			_0: A2(
-				_evancz$url_parser$UrlParser$map,
-				_user$project$Main$OauthState,
-				A2(
-					_evancz$url_parser$UrlParser_ops['</>'],
-					_evancz$url_parser$UrlParser$s('blog'),
-					_evancz$url_parser$UrlParser$int)),
-			_1: {ctor: '[]'}
-		}
+var _user$project$Main$OauthCode = F2(
+	function (a, b) {
+		return {ctor: 'OauthCode', _0: a, _1: b};
 	});
+var _user$project$Main$route = A2(
+	_evancz$url_parser$UrlParser$map,
+	_user$project$Main$OauthCode,
+	A2(
+		_evancz$url_parser$UrlParser_ops['<?>'],
+		A2(
+			_evancz$url_parser$UrlParser_ops['<?>'],
+			_evancz$url_parser$UrlParser$s('blog'),
+			_evancz$url_parser$UrlParser$stringParam('code')),
+		_evancz$url_parser$UrlParser$stringParam('string')));
 var _user$project$Main$init = function (location) {
 	return _user$project$Main$initModel(
 		A2(_evancz$url_parser$UrlParser$parseHash, _user$project$Main$route, location));
 };
+var _user$project$Main$updateOauth = F2(
+	function (model, location) {
+		var oauth = A2(_evancz$url_parser$UrlParser$parsePath, _user$project$Main$route, location);
+		var _p0 = oauth;
+		if (((_p0.ctor === 'Just') && (_p0._0._0.ctor === 'Just')) && (_p0._0._1.ctor === 'Just')) {
+			return {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						oauth: _elm_lang$core$Maybe$Just(
+							{code: _p0._0._0._0, state: _p0._0._1._0})
+					}),
+				_1: _elm_lang$core$Platform_Cmd$none
+			};
+		} else {
+			return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		}
+	});
+var _user$project$Main$update = F2(
+	function (c, m) {
+		var _p1 = c;
+		if (_p1.ctor === 'UrlChange') {
+			return A2(_user$project$Main$updateOauth, m, _p1._0);
+		} else {
+			return {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Native_Utils.update(
+					m,
+					{value: m.value + 1}),
+				_1: _elm_lang$core$Platform_Cmd$none
+			};
+		}
+	});
 var _user$project$Main$main = A2(
 	_elm_lang$navigation$Navigation$program,
 	_user$project$Main$UrlChange,
