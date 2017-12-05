@@ -37,7 +37,7 @@ init location =
     let oauth = parsePath route location
     in case oauth of
         Just (OauthCode (Just c) (Just s)) -> ({value=0, oauth = Just {code=c,state=s,location=location}}, Cmd.none)
-        _ -> ({value=0, oauth=Nothing}, Cmd.none)
+        _ -> ({value=0, oauth=Just {code="", state="", location=location}}, Cmd.none)
 
 updateOauth : Model -> Navigation.Location -> (Model, Cmd Msg)
 updateOauth model location =
@@ -59,7 +59,7 @@ view m = div []
                 , button [onClick NoOp] [text (toString m)]
                 ] 
              ++ [
-                   text "HELLOOO!!!"
+                   text "HELLOOO??"
                 ]
              )
 
